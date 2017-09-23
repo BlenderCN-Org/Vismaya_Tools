@@ -18,12 +18,12 @@
 
 
 bl_info = {
-    'name' : 'Vismaya Tools-v1.1',
+    'name' : 'Vismaya Tools-v1.2',
     'author' : 'Project Vismaya',
-    'version' : (0, 1),
-    'blender' : (2, 56, 2),
+    'version' : (1, 2, 0),
+    'blender' : (2, 79, 0),
     'location' : 'View3D > Toolbar',
-    'description' : 'Vismaya Tools v1.1',
+    'description' : 'Vismaya Tools v1.2',
     'category' : '3D View'}
     
 import bpy
@@ -942,153 +942,21 @@ types_enum = [("MODELING","  Modeling","","MOD_ARMATURE",1),("ANIMATION","  Anim
 
 bpy.types.Scene.menu_type = EnumProperty(name = "", default = "MODELING", items = types_enum)
 
+############## Base Panel ##############
+class View3DPanel():
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'TOOLS'
+    bl_category = "VisMaya"
 
-############## Vismaya Tools PANEL ############### 
-class VismayaToolsPanel(bpy.types.Panel):
-	bl_label = "Vismaya Tools"
-	bl_space_type = "VIEW_3D"
-	bl_region_type = "TOOL_PROPS"
-
+############## Shelfs Panel ##############
+class Vismaya_Shelfs(View3DPanel, bpy.types.Panel):
+	bl_label = "Shelfs"
+	
 	def draw(self, context):
 		toolsettings = context.tool_settings
 		layout = self.layout
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		row.operator("transform.manipul_translate", icon = 'MAN_TRANS')
-		row.separator()
-		row.operator("transform.manipul_rotate",  icon = 'MAN_ROT')
-		row.separator()
-		row.operator("transform.manipul_resize",  icon = 'MAN_SCALE')
-		row.separator()
-
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		row.operator("freeze_transform.selected",icon="FORCE_VORTEX")
-
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		row.operator("repeat.history",icon="MOD_BUILD")
-		row.separator()
-		row.operator("delete.history",icon="FULLSCREEN",text= "Delete History")
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		row.operator("object.del_node",  icon = 'DOT')
-
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		if vismaya_tools.opps1 == 1:
-			scn = context.scene
-			row.prop(scn, "mod_list")
-			row.operator("ba.delete_data_obs")
-		col.separator()		
-		col.operator("object.viewport_nav")
-		if vismaya_tools.opps == 1:
-			col = layout.column(align=True)
-			row = col.row(align=True)
-			row.operator("object.frame_selected",icon="MOD_MESHDEFORM")
-			row.operator("object.show_all",icon="WORLD_DATA")
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		row.operator_menu_enum("transform.set_pivot", "type",icon="CURSOR")
-		row.operator("object.origin_set", text = "Reset Pivot",icon="FILE_REFRESH").type='ORIGIN_CENTER_OF_MASS'
-
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		row.operator("object.parent_set", text="Set Parent",icon="ROTATECOLLECTION")
-		row.operator("object.parent_clear",  text="Reset Parent",icon="ROTACTIVE")
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-
-		layout.label(text="Production Folder")
-		layout.operator("productionfolder_scene.selected",text="Create Production",icon="FILE_FOLDER")
-		layout.operator("production_scene.selected",text="Set Production",icon="NEWFOLDER")
-		if vismaya_tools.pfopath != "":
-			layout.operator("file.production_folder", text="Show Production",icon="SHOW_PRODUCTION")
-
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-
-		layout.label(text="Freeze/UnFreeze Objects")
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		if vismaya_tools.mesh == 0:
-			typ = 'Freez Mesh'
-		else:
-			typ = 'UnFreez Mesh'
-		row.operator("object.mesh_all", text = typ,icon="MOD_SOLIDIFY")
-		row.separator()
-		if vismaya_tools.lamp == 0:
-			typ = 'Freez Lamp'
-		else:
-			typ = 'UnFreez Lamp'
-		row.operator("object.lamp_all",text = typ,icon="LIGHTPAINT")
-
-		col = layout.column(align=True)
-		row = col.row(align=True)
-
-		if vismaya_tools.curve == 0:
-			typ = 'Freez Curve'
-		else:
-			typ = 'UnFreez Curve'
-		row.operator("object.curve_all", text = typ,icon="MOD_CURVE")
-		row.separator()
-		if vismaya_tools.bone == 0:
-			typ = 'Freez Bone'
-		else:
-			typ = 'UnFreez Bone'
-		row.operator("object.bone_all", text = typ,icon="WPAINT_HLT")
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		if vismaya_tools.particles == 0:
-			typ = 'Freez Particles'
-		else:
-			typ = 'UnFreez Particles'
-		row.operator("object.particles_all", text = typ,icon="MOD_PARTICLES")
-		row.separator()
-		if vismaya_tools.camera == 0:
-			typ = 'Freez Camera'
-		else:
-			typ = 'UnFreez Camera'
-		row.operator("object.camera_all", text = typ,icon="RESTRICT_RENDER_OFF")
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-
-		layout.label(text= "Snap To")
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		row.operator("snap_face.selected",icon="SNAP_FACE")
-		row.separator()
-		row.operator("snap_edge.selected",icon="SNAP_EDGE")
-
-		col = layout.column(align=True)
-		row = col.row(align=True)
-		row.operator("snap_vertex.selected",icon="SNAP_VERTEX")
-		row.separator()
-		row.operator("snap_grid.selected",icon="SNAP_INCREMENT")
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-
-		layout.label(text="Reset Transform")
-		layout.operator("reset_transform.selected",icon="META_CUBE")
-		layout.operator("reset_armature.selected",icon="GROUP_BONE")
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-
-		layout.label(text="Object by type")
-		layout.operator_menu_enum("object.hide_by_type", "type", text="  Hide By Type",icon="SOLO_OFF")
-		layout.operator_menu_enum("object.show_by_type", "type", text="  Show By Type",icon="SOLO_ON")
-		layout.operator_menu_enum("object.sselect_by_type", "type", text= "  Select By Type",icon="STICKY_UVS_LOC")
-		layout.operator_menu_enum("object.deselect_by_type", "type", text= "  Deselect By Type",icon="STICKY_UVS_DISABLE")
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-	
-		layout.label(text="Constraint  Menu")
-		obj = context.object
-		layout.operator_menu_enum("object.constraint_add1", "type", text="  Add Object Constraint", icon="CONSTRAINT_DATA")
-
-		for con in obj.constraints:
-			self.draw_constraint(context, con)
-		layout.label("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-
-
-	########## Menu set ##########
+		
+		########## Menu set ##########
 		scn = context.scene
 		col = layout.column(align=True)
 		row = col.row(align=True)
@@ -1553,6 +1421,194 @@ class VismayaToolsPanel(bpy.types.Panel):
 			col = split.column()
 			col.label(text="Display:")
 			col.prop(arm, "show_only_ghost_selected", text="Selected Only")
+		
+############## Transform Panel ##############
+class Vismaya_TransformPanel(View3DPanel, bpy.types.Panel):
+	bl_label = "Transform"
+	
+	def draw(self, context):
+		layout = self.layout
+
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator("transform.manipul_translate", icon = 'MAN_TRANS')
+		row.separator()
+		row.operator("transform.manipul_rotate",  icon = 'MAN_ROT')
+		row.separator()
+		row.operator("transform.manipul_resize",  icon = 'MAN_SCALE')
+		row.separator()
+
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator("freeze_transform.selected",icon="FORCE_VORTEX")
+		
+		layout.label(text="Reset Transform")
+		layout.operator("reset_transform.selected",icon="META_CUBE")
+		layout.operator("reset_armature.selected",icon="GROUP_BONE")
+		
+		layout.label(text="Pivot")
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator_menu_enum("transform.set_pivot", "type",icon="CURSOR")
+		row.operator("object.origin_set", text = "Reset Pivot",icon="FILE_REFRESH").type='ORIGIN_CENTER_OF_MASS'
+		
+		layout.label(text="Freeze/UnFreeze Objects")
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		if vismaya_tools.mesh == 0:
+			typ = 'Freez Mesh'
+		else:
+			typ = 'UnFreez Mesh'
+		row.operator("object.mesh_all", text = typ,icon="MOD_SOLIDIFY")
+		row.separator()
+		if vismaya_tools.lamp == 0:
+			typ = 'Freez Lamp'
+		else:
+			typ = 'UnFreez Lamp'
+		row.operator("object.lamp_all",text = typ,icon="LIGHTPAINT")
+
+		col = layout.column(align=True)
+		row = col.row(align=True)
+
+		if vismaya_tools.curve == 0:
+			typ = 'Freez Curve'
+		else:
+			typ = 'UnFreez Curve'
+		row.operator("object.curve_all", text = typ,icon="MOD_CURVE")
+		row.separator()
+		if vismaya_tools.bone == 0:
+			typ = 'Freez Bone'
+		else:
+			typ = 'UnFreez Bone'
+		row.operator("object.bone_all", text = typ,icon="WPAINT_HLT")
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		if vismaya_tools.particles == 0:
+			typ = 'Freez Particles'
+		else:
+			typ = 'UnFreez Particles'
+		row.operator("object.particles_all", text = typ,icon="MOD_PARTICLES")
+		row.separator()
+		if vismaya_tools.camera == 0:
+			typ = 'Freez Camera'
+		else:
+			typ = 'UnFreez Camera'
+		row.operator("object.camera_all", text = typ,icon="RESTRICT_RENDER_OFF")
+		
+		row.separator()
+		layout.label(text="Constraint  Menu")
+		obj = context.object
+		layout.operator_menu_enum("object.constraint_add1", "type", text="  Add Object Constraint", icon="CONSTRAINT_DATA")
+
+		for con in obj.constraints:
+			self.draw_constraint(context, con)
+
+############## Snapping Panel ##############
+class Vismaya_SnappingPanel(View3DPanel, bpy.types.Panel):
+	bl_label = "Snapping"
+	
+	def draw(self, context):
+		layout = self.layout
+		
+		obj = context.active_object
+		toolsettings = context.tool_settings
+		if obj:
+			mode = obj.mode
+
+		# Snap
+		if not obj or mode not in {'SCULPT', 'VERTEX_PAINT', 'WEIGHT_PAINT', 'TEXTURE_PAINT'}:
+			snap_element = toolsettings.snap_element
+			#row = layout.row(align=True)
+			col = layout.column(align=True)
+			row = col.row(align=True)
+			row.prop(toolsettings, "use_snap", text="On/Off")
+			row.separator()
+			col = layout.column(align=True)
+			row = col.row(align=True)
+			row.prop(toolsettings, "snap_element", icon_only=True)
+			if snap_element != 'INCREMENT':
+				col = layout.column(align=True)
+				row = col.row(align=True)
+				row.prop(toolsettings, "snap_target", text="Target")
+				if obj:
+					if mode in {'OBJECT', 'POSE'} and snap_element != 'VOLUME':
+						row.prop(toolsettings, "use_snap_align_rotation", text="")
+					elif mode == 'EDIT':
+						row.prop(toolsettings, "use_snap_self", text="")
+
+			if snap_element == 'VOLUME':
+				row.prop(toolsettings, "use_snap_peel_object", text="")
+			elif snap_element == 'FACE':
+				row.prop(toolsettings, "use_snap_project", text="")
+
+		# AutoMerge editing
+		if obj:
+			if (mode == 'EDIT' and obj.type == 'MESH'):
+				layout.prop(toolsettings, "use_mesh_automerge", text="Auto Merge Vertices", icon='AUTOMERGE_ON')
+		
+############## Parenting Panel ##############
+class Vismaya_ParentingPanel(View3DPanel, bpy.types.Panel):
+	bl_label = "Parenting"
+	
+	def draw(self, context):
+		layout = self.layout
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator("object.parent_set", text="Set Parent",icon="ROTATECOLLECTION")
+		row.operator("object.parent_clear",  text="Reset Parent",icon="ROTACTIVE")
+        
+############## History Panel ##############
+class Vismaya_HistoryPanel(View3DPanel, bpy.types.Panel):
+	bl_label = "History"
+	
+	def draw(self, context):
+		layout = self.layout
+		
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator("repeat.history",icon="MOD_BUILD")
+		row.separator()
+		row.operator("delete.history",icon="FULLSCREEN",text= "Delete History")
+		
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator("object.del_node",  icon = 'DOT')
+		
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		if vismaya_tools.opps1 == 1:
+			scn = context.scene
+			row.prop(scn, "mod_list")
+			row.operator("ba.delete_data_obs")
+
+############## View Panel ##############
+class Vismaya_ViewPanel(View3DPanel, bpy.types.Panel):
+	bl_label = "View / Objects by Type"
+	
+	def draw(self, context):
+		layout = self.layout
+		col = layout.column(align=True)
+		row = col.row(align=True)
+		row.operator("object.frame_selected",icon="MOD_MESHDEFORM")
+		row.operator("object.show_all",icon="WORLD_DATA")
+		row.separator()
+		layout.label(text="Objects by Type (Object Mode)")
+		layout.operator_menu_enum("object.hide_by_type", "type", text="  Hide By Type",icon="SOLO_OFF")
+		layout.operator_menu_enum("object.show_by_type", "type", text="  Show By Type",icon="SOLO_ON")
+		layout.operator_menu_enum("object.sselect_by_type", "type", text= "  Select By Type",icon="STICKY_UVS_LOC")
+		layout.operator_menu_enum("object.deselect_by_type", "type", text= "  Deselect By Type",icon="STICKY_UVS_DISABLE")
+			
+############## ProductionFolder Panel ##############
+class Vismaya_ProductionFolderPanel(View3DPanel, bpy.types.Panel):
+	bl_label = "Production Folder"
+	
+	def draw(self, context):
+		layout = self.layout
+		layout.operator("productionfolder_scene.selected",text="Create Production",icon="FILE_FOLDER")
+		layout.operator("production_scene.selected",text="Set Production",icon="NEWFOLDER")
+		if vismaya_tools.pfopath != "":
+			layout.operator("file.production_folder", text="Show Production",icon="SHOW_PRODUCTION")
+
 
 bpy.types.WindowManager.off = bpy.props.IntProperty(name='Move Keys', min=-1000, soft_min=-250, max=1000, soft_max=250, default=0, description='Offset value for f-curves in selected objects')
 bpy.types.WindowManager.drag = bpy.props.IntProperty(name='Drag', min=-drag_max, max=drag_max, default=0, description='Drag to offset keyframes', update=drag)
@@ -1712,4 +1768,3 @@ def unregister():
 
 if __name__ == "__main__":
     register()
-
