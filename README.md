@@ -1,6 +1,8 @@
 # Vismaya_Tools
 Fork of the Project Vismaya Tools blender addon
 
+v1.2 Thanks to Vaquero from Blender Artists for the init changes putting the addon properly in the tool shelf tabs
+
 ## Evaluating the usability of the Project Vismaya addon as a bridge for new Maya users to cross over to blender.
 The addon needs to be moved from the old Tool Shelf to the new Tool Tabs UI configuration.
 
